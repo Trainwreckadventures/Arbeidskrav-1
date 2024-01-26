@@ -45,17 +45,21 @@ function heroAttack(heroIndex) {
   dragonObject.currentHP -= chosenHero.damage;
 
   //Her gjør vi slik at dragen kan gå i 0 men ikke i minus hp:
-  //dragonObject.currentHP = Math.max(0, dragonObject.currentHP);
+  dragonObject.currentHP = Math.max(0, dragonObject.currentHP);
 
   showDragonHealth();
 
   alert(
     `${chosenHero.name} har gjort ${chosenHero.damage} skade på ${dragonObject.name}`
   );
+  showHeroHealth(chosenHero);
   // vi kaller på dragens motangrep:
   randomCounterAttack();
+
+  console.log("helten angriper dragen")
 }
 
+//healthbars:
 function showDragonHealth() {
   //Vi definerer dragens HP:
   const currentDragonHP = dragonObject.currentHP;
@@ -69,6 +73,21 @@ function showDragonHealth() {
   const dragonHealthbar = document.querySelector(".dragon-health");
   const percentage = (currentDragonHP / maxDragonHP) * 100;
   dragonHealthbar.style.width = percentage + "%";
+
+console.log("dragens helse")
+}
+//this needs more work! The p tags and the health bar is not updated when the dragon attacks the heroes:
+function showHeroHealth(hero) {
+  const healthElement = document.getElementById(
+    `${hero.name.toLowerCase()}-health-txt`
+  );
+
+  if (healthElement) {
+    healthElement.innerHTML = `${hero.currentHP} / ${hero.maxHP} HP`;
+    const percentage = (hero.currentHP / hero.maxHP) * 100;
+    healthElement.style.width = percentage + "%";
+  }
+  console.log("heltens helse")
 }
 
 //Vi lager en const for heltene våre, her bruker vi querry selector med.siden vi bruker klassenavnet "hero" :
@@ -83,7 +102,6 @@ myHeroes.forEach((hero, i) => {
 });
 
 // 2)  Dragen gjør et counter attack:
-//needs more work! virker bare innimellom men ikke hele tiden...
 function randomCounterAttack() {
   //Her sørger vi for at dragen angriper en random helt:
   const randomNumber = Math.random();
@@ -94,14 +112,15 @@ function randomCounterAttack() {
     if (randomHero && randomHero.currentHP > 0) {
       //vi vil at skaden skal trekkes fra heltens hp:
       randomHero.currentHP -= dragonObject.damage;
-      //her henter vi inn den tilfeldige heltens helsetekst (denne var vanskelig):
+      //her henter vi inn den tilfeldige heltens helse-tekst:
       const heroHealthTxt = document.getElementById(
         `${randomHero.name.toLowerCase()}-health-txt`
       );
       if (heroHealthTxt) {
         heroHealthTxt.innerHTML = `${randomHero.currentHP} / ${randomHero.maxHP} HP`;
       }
-      alert(`${dragonObject.name} har angrepet ${randomHero.name}`);
+      alert(`${dragonObject.name} har angrepet ${randomHero.name} og gjort ${dragonObject.damage} i skade`);
     }
   }
+  console.log("dragen angriper en tilfeldig helt og det skal poppe opp en melding")
 }
