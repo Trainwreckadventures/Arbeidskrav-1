@@ -52,6 +52,8 @@ function heroAttack(heroIndex) {
   alert(
     `${chosenHero.name} har gjort ${chosenHero.damage} skade på ${dragonObject.name}`
   );
+  // vi kaller på dragens motangrep:
+  randomCounterAttack();
 }
 
 function showDragonHealth() {
@@ -81,16 +83,25 @@ myHeroes.forEach((hero, i) => {
 });
 
 // 2)  Dragen gjør et counter attack:
-//needs more work!
+//needs more work! virker bare innimellom men ikke hele tiden...
 function randomCounterAttack() {
-  const randomAttack = Math.random();
-
-  if (randomAttack < 1 / 3) {
-    const chosenHeroIndex = Math.floor(Math.random * heroesArray.lenght);
-    const chosenHero = heroesArray[chosenHeroIndex];
-    chosenHero.currentHP -= dragonObject.damage;
-
-    const heroHealthTxt = document.getElementById("hero-healt-txt"); //querry?
-    heroHealthTxt.innerHTML = `${chosenHero / chosenHero.maxHP} HP`;
+  //Her sørger vi for at dragen angriper en random helt:
+  const randomNumber = Math.random();
+  if (randomNumber < 1 / 3) {
+    const randomHeroIndex = Math.floor(Math.random() * heroesArray.length);
+    const randomHero = heroesArray[randomHeroIndex];
+    //her bruker vi && for å forsikre oss om at helten finnes:
+    if (randomHero && randomHero.currentHP > 0) {
+      //vi vil at skaden skal trekkes fra heltens hp:
+      randomHero.currentHP -= dragonObject.damage;
+      //her henter vi inn den tilfeldige heltens helsetekst (denne var vanskelig):
+      const heroHealthTxt = document.getElementById(
+        `${randomHero.name.toLowerCase()}-health-txt`
+      );
+      if (heroHealthTxt) {
+        heroHealthTxt.innerHTML = `${randomHero.currentHP} / ${randomHero.maxHP} HP`;
+      }
+      alert(`${dragonObject.name} har angrepet ${randomHero.name}`);
+    }
   }
 }
