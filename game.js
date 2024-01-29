@@ -92,13 +92,11 @@ function randomCounterAttack() {
     const heroHealthTxtElement = document.getElementById(
       `${randomHero.name.toLowerCase()}-health-txt`
     );
-    console.log(heroHealthTxtElement);
-    heroHealthTxtElement.innerHTML = `${randomHero.currentHP}/${randomHero.maxHP}`;
   }
 }
-//testen vår:
-function test(x) {
-  console.log("test", x);
+//testen vår for å  debugge helteproblemer:
+function test(randomHerohero) {
+  console.log("test", randomHerohero);
   const tekstFeltTekst = document.getElementById("warrior-health-txt");
 
   return tekstFeltTekst;
@@ -118,4 +116,28 @@ function showDragonHealth() {
   const dragonHealthbar = document.querySelector(".dragon-health");
   const percentage = (currentDragonHP / maxDragonHP) * 100;
   dragonHealthbar.style.width = percentage + "%";
+  //om dragen har 0 i hp:
+  dragonDeath();
+}
+
+//Ok alerten fungerer her, hurra!
+function dragonDeath() {
+  if (dragonObject.currentHP <= 0) {
+    alert("Gratulerer! Du har vunnet spillet!");
+
+    //vi tar bort bildet av dragen:
+    const dragonImage = document.querySelector(".dragon");
+    if (dragonImage) {
+      dragonImage.style.display = "none";
+    }
+  }
+}
+
+//Du må jobbe mer med heletene!
+//om heltene våre når 0 i hp sskal bildet av helten forsvinne:
+function heroDeath() {
+  if ((hero.currentHP = 0)) {
+    document.querySelector(`.${hero}`).style.display = `none`;
+    alert(`${randomHero} er død`);
+  }
 }
