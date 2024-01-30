@@ -88,11 +88,8 @@ function randomCounterAttack() {
     alert(
       `${dragonObject.name} har angrepet ${randomHero.name} og gjort ${dragonObject.damage} i skade`
     );
-    //prøver å manipulerer heltens helsetekst(dette trenger du egentlig ikke for det oppdateres i arrayet):
-    const heroHealthTxtElement = document.getElementById(
-      `${randomHero.name.toLowerCase()}-health-txt`
-    );
   }
+  heroHealth();
 }
 //testen vår for å  debugge helteproblemer:
 function test(randomHerohero) {
@@ -123,21 +120,40 @@ function showDragonHealth() {
 //Ok alerten fungerer her, hurra!
 function dragonDeath() {
   if (dragonObject.currentHP <= 0) {
-    alert("Gratulerer! Du har vunnet spillet!");
-
     //vi tar bort bildet av dragen:
     const dragonImage = document.querySelector(".dragon");
     if (dragonImage) {
       dragonImage.style.display = "none";
+      alert("Gratulerer! Du har vunnet spillet!");
     }
   }
 }
 
-//Du må jobbe mer med heletene!
-//om heltene våre når 0 i hp sskal bildet av helten forsvinne:
-function heroDeath() {
-  if ((hero.currentHP = 0)) {
-    document.querySelector(`.${hero}`).style.display = `none`;
-    alert(`${randomHero} er død`);
+//Heltene blir borte om de dør (Her fikk jeg hjelp fra en i klassen til å komme i gang også bygget jeg vidre på det hun viste meg):
+function heroHealth() {
+  if (heroesArray[0].currentHP <= 0) {
+    let heroHealer = document.querySelector(".img-container.healer");
+    if (heroHealer) {
+      heroHealer.remove();
+      setTimeout(function () {
+        alert(`${heroesArray[0].name} er ute av kampen!`);
+      }, 250);
+    }
+  } else if (heroesArray[1].currentHP <= 0) {
+    let heroArcher = document.querySelector(".img-container.archer");
+    if (heroArcher) {
+      heroArcher.remove();
+      setTimeout(function () {
+        alert(`${heroesArray[1].name} er ute av kampen!`);
+      }, 250);
+    }
+  } else if (heroesArray[2].currentHP <= 0) {
+    let heroWarrior = document.querySelector(".img-container.warrior");
+    if (heroWarrior) {
+      heroWarrior.remove();
+      setTimeout(function () {
+        alert(`${heroesArray[2].name} er ute av kampen!`);
+      }, 250);
+    }
   }
 }
