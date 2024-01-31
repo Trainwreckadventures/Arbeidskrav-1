@@ -54,12 +54,23 @@ myHeroes.forEach((hero, i) => {
 
 function heroAttack(heroIndex) {
   const chosenHero = heroesArray[heroIndex];
+  // sjekk om dragen er død:
+  if (dragonObject.currentHP <= 0) {
+    alert("Du har allerede beseiret dragen!");
+    return;
+  }
+
+  // sjekk om helten er død:
+  if (chosenHero.currentHP <= 0) {
+    alert(`${chosenHero.name} er allerede død og kan ikke kjempe mer.`);
+    return;
+  }
   dragonObject.currentHP -= chosenHero.damage;
 
   alert(
     `${chosenHero.name} har gjort ${chosenHero.damage} skade på ${dragonObject.name}`
   );
-
+  updateHealthBars();
   //Her gjør vi slik at dragen kan gå i 0 men ikke i minus hp:
   dragonObject.currentHP = Math.max(0, dragonObject.currentHP);
 
@@ -71,6 +82,11 @@ function heroAttack(heroIndex) {
 }
 
 function randomCounterAttack() {
+  //er dragen i live?:
+  if (dragonObject.currentHP <= 0) {
+    alert("dragen er død.");
+    return;
+  }
   //Her sørger vi for at dragen angriper en random helt:
   const randomHeroIndex = Math.floor(Math.random() * heroesArray.length);
   const randomHero = heroesArray[randomHeroIndex];
@@ -83,13 +99,15 @@ function randomCounterAttack() {
   if (randomHero && randomHero.currentHP > 0) {
     // Dragen gjør skade på helten:
     randomHero.currentHP -= dragonObject.damage;
+
     console.log("randomHeroHP", randomHero, randomHero.currentHP);
     // Alert:
     alert(
       `${dragonObject.name} har angrepet ${randomHero.name} og gjort ${dragonObject.damage} i skade`
     );
+    updateHealthBars();
   }
-  heroHealth();
+  heroDeath();
 }
 //testen vår for å  debugge helteproblemer:
 function test(randomHerohero) {
@@ -129,8 +147,9 @@ function dragonDeath() {
   }
 }
 
-//Heltene blir borte om de dør (Her fikk jeg hjelp fra en i klassen til å komme i gang også bygget jeg vidre på det hun viste meg):
-function heroHealth() {
+//Heltene blir borte om de dør (Her fikk jeg hjelp fra en i klassen til å komme i gang også bygget jeg vidre på det hun viste meg)
+//koden er veldig repetativ så kanskje jeg finner en bedre løsning på det...
+function heroDeath() {
   if (heroesArray[0].currentHP <= 0) {
     let heroHealer = document.querySelector(".img-container.healer");
     if (heroHealer) {
@@ -156,4 +175,19 @@ function heroHealth() {
       }, 250);
     }
   }
+}
+//hvorfor får jeg ikke dette til å fungere i det heletatt? jeg trenger seriøst hjelp...
+//future me plz fiks this:
+function updateHealthBars() {
+  heroesArray.forEach((hero) => {
+    const healthBar = document.querySelector(
+      `.healthbar.${hero.name.toLowerCase()}-health`
+    );
+    if (healthBar) {
+      const percentage = (hero.currentHP / hero.maxHP) * 100;
+      healthBar.style.width = percentage + "%";
+    } else {
+      console.error(`${hero.name} health bar element not found!`);
+    }
+  });
 }
