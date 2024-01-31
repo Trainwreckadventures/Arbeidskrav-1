@@ -40,7 +40,18 @@ let dragonObject = {
 //lifebarens grønne farge blir mindre og mindre
 //basert på current HP
 
+const HenrietteHealerHealthBar = document.getElementsByClassName(
+  "healthbar healer-health"
+);
+const ArianaArcherHealthBar = document.getElementsByClassName(
+  "healthbar archer-health"
+);
+const WyonaWarriorHealthBar = document.getElementsByClassName(
+  "healthbar warrior-health"
+);
+
 // 1) Når brukeren trykker på en helt, skal denne helten angripe dragen:
+
 //Vi lager en const for heltene våre, her bruker vi querry selector med.siden vi bruker klassenavnet "hero" :
 const myHeroes = document.querySelectorAll(".hero");
 //Vi legger til en eventListener med forEach
@@ -56,13 +67,11 @@ function heroAttack(heroIndex) {
   const chosenHero = heroesArray[heroIndex];
   // sjekk om dragen er død:
   if (dragonObject.currentHP <= 0) {
-    alert("Du har allerede beseiret dragen!");
     return;
   }
 
   // sjekk om helten er død:
   if (chosenHero.currentHP <= 0) {
-    alert(`${chosenHero.name} er allerede død og kan ikke kjempe mer.`);
     return;
   }
   dragonObject.currentHP -= chosenHero.damage;
@@ -78,13 +87,14 @@ function heroAttack(heroIndex) {
   showDragonHealth();
 
   // vi kaller på dragens motangrep:
-  randomCounterAttack();
+  setTimeout(function () {
+    randomCounterAttack();
+  }, 250);
 }
 
 function randomCounterAttack() {
   //er dragen i live?:
   if (dragonObject.currentHP <= 0) {
-    alert("dragen er død.");
     return;
   }
   //Her sørger vi for at dragen angriper en random helt:
@@ -99,7 +109,7 @@ function randomCounterAttack() {
   if (randomHero && randomHero.currentHP > 0) {
     // Dragen gjør skade på helten:
     randomHero.currentHP -= dragonObject.damage;
-
+    //debugtesting:
     console.log("randomHeroHP", randomHero, randomHero.currentHP);
     // Alert:
     alert(
@@ -176,18 +186,22 @@ function heroDeath() {
     }
   }
 }
-//hvorfor får jeg ikke dette til å fungere i det heletatt? jeg trenger seriøst hjelp...
-//future me plz fiks this:
+//dette fungerer ish, men føles veldig ducktape ut...
 function updateHealthBars() {
   heroesArray.forEach((hero) => {
-    const healthBar = document.querySelector(
-      `.healthbar.${hero.name.toLowerCase()}-health`
-    );
+    //Her måtte jeg bruke split siden navnet i arrayet har navn og rolle (i html er bare rollen i class taggen):
+    const heroRole = hero.name.split(" ")[1].toLowerCase();
+
+    // Her velger vi healthbar basert på rolle(healer/archer/warrior);
+    const healthBar = document.querySelector(`.healthbar.${heroRole}-health`);
+
     if (healthBar) {
-      const percentage = (hero.currentHP / hero.maxHP) * 100;
+      // her måtte jeg knote noe helt sinnsykt for å få det til å fungere:
+      const percentage = (hero.currentHP / hero.maxHP) * 23.5;
+
       healthBar.style.width = percentage + "%";
     } else {
-      console.error(`${hero.name} health bar element not found!`);
+      console.error(`Health bar for ${hero.name} not found!`);
     }
   });
 }
