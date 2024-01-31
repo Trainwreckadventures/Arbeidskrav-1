@@ -197,7 +197,8 @@ function updateHealthBars() {
 
     if (healthBar) {
       // her måtte jeg knote noe helt sinnsykt for å få det til å fungere:
-      const percentage = (hero.currentHP / hero.maxHP) * 23.5;
+      //den funker ikke helt enda for det kommer ann på om man har full skjerm eller ikke...not good!
+      const percentage = (hero.currentHP / hero.maxHP) * 17.73;
 
       healthBar.style.width = percentage + "%";
     } else {
