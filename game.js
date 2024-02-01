@@ -147,15 +147,20 @@ function heroDeath() {
         alert(`${heroesArray[0].name} er ute av kampen!`);
       }, 250);
     }
-  } else if (heroesArray[1].currentHP <= 0) {
+  }
+
+  if (heroesArray[1].currentHP <= 0) {
     let heroArcher = document.querySelector(".img-container.archer");
     if (heroArcher) {
       heroArcher.remove();
+      console.log(`Archer's current HP: ${heroesArray[1].currentHP}`);
       setTimeout(function () {
         alert(`${heroesArray[1].name} er ute av kampen!`);
       }, 250);
     }
-  } else if (heroesArray[2].currentHP <= 0) {
+  }
+
+  if (heroesArray[2].currentHP <= 0) {
     let heroWarrior = document.querySelector(".img-container.warrior");
     if (heroWarrior) {
       heroWarrior.remove();
@@ -169,7 +174,7 @@ function heroDeath() {
 //her går det grønne nedover, men den grønne baren overflower litt (best I can do):
 function updateHealthBars() {
   heroesArray.forEach((hero) => {
-    //vi targeter heltens rolle med .split og [1]:
+    //vi targeter heltens med .split og [1]:
     const heroRole = hero.name.split(" ")[1].toLowerCase();
     const healthBar = document.querySelector(`.healthbar.${heroRole}-health`);
 
