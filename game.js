@@ -36,20 +36,6 @@ let dragonObject = {
   alive: true,
 };
 
-//Jeg har valgt 3 som tilleggsfunksjonalitet
-//lifebarens grønne farge blir mindre og mindre
-//basert på current HP
-
-const HenrietteHealerHealthBar = document.getElementsByClassName(
-  "healthbar healer-health"
-);
-const ArianaArcherHealthBar = document.getElementsByClassName(
-  "healthbar archer-health"
-);
-const WyonaWarriorHealthBar = document.getElementsByClassName(
-  "healthbar warrior-health"
-);
-
 // 1) Når brukeren trykker på en helt, skal denne helten angripe dragen:
 
 //Vi lager en const for heltene våre, her bruker vi querry selector med.siden vi bruker klassenavnet "hero" :
@@ -101,16 +87,11 @@ function randomCounterAttack() {
   const randomHeroIndex = Math.floor(Math.random() * heroesArray.length);
   const randomHero = heroesArray[randomHeroIndex];
 
-  //test:
-  const randomHeroTekstFelt = test(randomHero);
-  console.log("randomHeroTekstfelt");
-
   //her bruker vi && for å forsikre oss om at helten finnes og har over 0 i liv:
   if (randomHero && randomHero.currentHP > 0) {
     // Dragen gjør skade på helten:
     randomHero.currentHP -= dragonObject.damage;
-    //debugtesting:
-    console.log("randomHeroHP", randomHero, randomHero.currentHP);
+
     // Alert:
     alert(
       `${dragonObject.name} har angrepet ${randomHero.name} og gjort ${dragonObject.damage} i skade`
@@ -118,13 +99,6 @@ function randomCounterAttack() {
     updateHealthBars();
   }
   heroDeath();
-}
-//testen vår for å  debugge helteproblemer:
-function test(randomHerohero) {
-  console.log("test", randomHerohero);
-  const tekstFeltTekst = document.getElementById("warrior-health-txt");
-
-  return tekstFeltTekst;
 }
 
 //dragons healthbar:
@@ -145,14 +119,19 @@ function showDragonHealth() {
   dragonDeath();
 }
 
-//Ok alerten fungerer her, hurra!
+//Du drepte dragen og vant spillet:
 function dragonDeath() {
   if (dragonObject.currentHP <= 0) {
     //vi tar bort bildet av dragen:
     const dragonImage = document.querySelector(".dragon");
     if (dragonImage) {
-      dragonImage.style.display = "none";
-      alert("Gratulerer! Du har vunnet spillet!");
+      setTimeout(function () {
+        alert("Gratulerer! Du har vunnet spillet!");
+        let darDragon = document.querySelector(
+          ".img-container.dragon-container"
+        );
+        darDragon.remove();
+      }, 100);
     }
   }
 }
@@ -186,23 +165,19 @@ function heroDeath() {
     }
   }
 }
-//dette fungerer ish, men føles veldig ducktape ut...
+
+//her går det grønne nedover, men den grønne baren overflower litt (best I can do):
 function updateHealthBars() {
   heroesArray.forEach((hero) => {
-    //Her måtte jeg bruke split siden navnet i arrayet har navn og rolle (i html er bare rollen i class taggen):
+    //vi targeter heltens rolle med .split og [1]:
     const heroRole = hero.name.split(" ")[1].toLowerCase();
-
-    // Her velger vi healthbar basert på rolle(healer/archer/warrior);
     const healthBar = document.querySelector(`.healthbar.${heroRole}-health`);
 
     if (healthBar) {
-      // her måtte jeg knote noe helt sinnsykt for å få det til å fungere:
-      //den funker ikke helt enda for det kommer ann på om man har full skjerm eller ikke...not good!
-      const percentage = (hero.currentHP / hero.maxHP) * 17.73;
-
-      healthBar.style.width = percentage + "%";
-    } else {
-      console.error(`Health bar for ${hero.name} not found!`);
+      const containerWidth = healthBar.parentElement.offsetWidth;
+      const percentage = (hero.currentHP / hero.maxHP) * containerWidth;
+      //jeg bruker px istedenfor % for det så ut til å fungere bedre når jeg endret størrelse på vinduet:
+      healthBar.style.width = percentage + "px";
     }
   });
 }
