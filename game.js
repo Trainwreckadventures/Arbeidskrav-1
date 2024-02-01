@@ -15,7 +15,7 @@ let heroesArray = [
     name: "Ariana archer",
     maxHP: 500,
     currentHP: 500,
-    damage: 400,
+    damage: 0,
     alive: true,
   },
   {
@@ -23,7 +23,7 @@ let heroesArray = [
     name: "Wyona Warrior",
     maxHP: 600,
     currentHP: 600,
-    damage: 400,
+    damage: 0,
     alive: true,
   },
 ];
@@ -65,9 +65,6 @@ function heroAttack(heroIndex) {
   alert(
     `${chosenHero.name} har gjort ${chosenHero.damage} skade på ${dragonObject.name}`
   );
-  updateHealthBars();
-  //Her gjør vi slik at dragen kan gå i 0 men ikke i minus hp:
-  dragonObject.currentHP = Math.max(0, dragonObject.currentHP);
 
   //helten gjør skade på dragen:
   showDragonHealth();
@@ -79,29 +76,40 @@ function heroAttack(heroIndex) {
 }
 
 function randomCounterAttack() {
-  //er dragen i live?:
+  // Sjekk om dragen er i live:
   if (dragonObject.currentHP <= 0) {
     return;
   }
-  //Her sørger vi for at dragen angriper en random helt:
-  const randomHeroIndex = Math.floor(Math.random() * heroesArray.length);
-  const randomHero = heroesArray[randomHeroIndex];
 
-  //her bruker vi && for å forsikre oss om at helten finnes og har over 0 i liv:
-  if (randomHero && randomHero.currentHP > 0) {
-    // Dragen gjør skade på helten:
-    randomHero.currentHP -= dragonObject.damage;
+  // Filtrer ut de heltene vi har som fremdeles lever:
+  const aliveHeroes = heroesArray.filter((hero) => hero.currentHP > 0);
 
-    // Alert:
-    alert(
-      `${dragonObject.name} har angrepet ${randomHero.name} og gjort ${dragonObject.damage} i skade`
-    );
-    updateHealthBars();
+  //Sjekker om det finnes noen helter igjen å angripe og stopper om vi ikke har noen:
+  if (aliveHeroes.length === 0) {
+    return;
   }
-  heroDeath();
+
+  // Velger en tilfeldig helt å angripe:
+  const randomHeroIndex = Math.floor(Math.random() * aliveHeroes.length);
+  const randomHero = aliveHeroes[randomHeroIndex];
+
+  // Dragen gjør skade på helten den angriper:
+  randomHero.currentHP -= dragonObject.damage;
+
+  alert(
+    `${dragonObject.name} har angrepet ${randomHero.name} og gjort ${dragonObject.damage} i skade`
+  );
+
+  // Oppdaterer helsebaren til helten:
+  updateHealthBars();
+
+  // Sjekker om helten dør etter angrepet:
+  if (randomHero.currentHP <= 0) {
+    heroDeath(randomHero);
+  }
 }
 
-//dragons healthbar:
+//dragens healthbar:
 function showDragonHealth() {
   //Vi definerer dragens HP:
   const currentDragonHP = dragonObject.currentHP;
@@ -115,6 +123,8 @@ function showDragonHealth() {
   const dragonHealthbar = document.querySelector(".dragon-health");
   const percentage = (currentDragonHP / maxDragonHP) * 100;
   dragonHealthbar.style.width = percentage + "%";
+  //Her gjør vi slik at dragen kan gå i 0 men ikke i minus hp:
+  dragonObject.currentHP = Math.max(0, dragonObject.currentHP);
   //om dragen har 0 i hp:
   dragonDeath();
 }
@@ -143,6 +153,7 @@ function heroDeath() {
     let heroHealer = document.querySelector(".img-container.healer");
     if (heroHealer) {
       heroHealer.remove();
+      console.log(`HealerHP: ${heroesArray[0].currentHP}`);
       setTimeout(function () {
         alert(`${heroesArray[0].name} er ute av kampen!`);
       }, 250);
@@ -153,7 +164,7 @@ function heroDeath() {
     let heroArcher = document.querySelector(".img-container.archer");
     if (heroArcher) {
       heroArcher.remove();
-      console.log(`Archer's current HP: ${heroesArray[1].currentHP}`);
+      console.log(`ArcherHP: ${heroesArray[1].currentHP}`);
       setTimeout(function () {
         alert(`${heroesArray[1].name} er ute av kampen!`);
       }, 250);
@@ -164,25 +175,34 @@ function heroDeath() {
     let heroWarrior = document.querySelector(".img-container.warrior");
     if (heroWarrior) {
       heroWarrior.remove();
+      console.log(`WarriorHP: ${heroesArray[2].currentHP}`);
       setTimeout(function () {
         alert(`${heroesArray[2].name} er ute av kampen!`);
       }, 250);
     }
   }
 }
-
-//her går det grønne nedover, men den grønne baren overflower litt (best I can do):
+//løste problemet med Arianas healthbar:
 function updateHealthBars() {
   heroesArray.forEach((hero) => {
-    //vi targeter heltens med .split og [1]:
     const heroRole = hero.name.split(" ")[1].toLowerCase();
     const healthBar = document.querySelector(`.healthbar.${heroRole}-health`);
 
     if (healthBar) {
       const containerWidth = healthBar.parentElement.offsetWidth;
-      const percentage = (hero.currentHP / hero.maxHP) * containerWidth;
-      //jeg bruker px istedenfor % for det så ut til å fungere bedre når jeg endret størrelse på vinduet:
+      let percentage = 0;
+
+      if (hero.currentHP > 0) {
+        percentage = (hero.currentHP / hero.maxHP) * containerWidth;
+      }
+
       healthBar.style.width = percentage + "px";
+
+      // Om helten er død sett vidden av healthbaren til 0:
+      if (hero.currentHP <= 0) {
+        healthBar.style.width = "0px";
+      }
     }
   });
 }
+//må finne en løsning for "du tapte alerten...husk å skru opp hp tin warrior og archer når du har fikset det!
