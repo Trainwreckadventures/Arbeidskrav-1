@@ -106,8 +106,8 @@ function showDragonHealth() {
   const currentDragonHP = dragonObject.currentHP;
   const maxDragonHP = dragonObject.maxHP;
   //endrer verdien i p taggen vår:
-  const dragonHealthTxt = document.querySelector(".dragon-health-txt");
-  dragonHealthTxt.innerHTML = `${currentDragonHP} / ${maxDragonHP} HP`;
+  //const dragonHealthTxt = document.querySelector(".dragon-health-txt");
+  //dragonHealthTxt.innerHTML = `${currentDragonHP} / ${maxDragonHP} HP`;
   //kjører nok en querry selector med . siden vi fremdeles bruker klassenavnet:
   const dragonHealthbar = document.querySelector(".dragon-health");
   const percentage = (currentDragonHP / maxDragonHP) * 100;
@@ -206,6 +206,9 @@ function youLost() {
   const darLives = dragonObject.currentHP > 0;
   //her sjekker vi om alle heltene er døde, og om dragenn fremdeles lever:
   if (allDeadHeroes.length === 3 && darLives) {
-    alert("Du har tapt spillet!");
+    setTimeout(function () {
+      alert("Du har tapt spillet!");
+    }),
+      250;
   }
 }
